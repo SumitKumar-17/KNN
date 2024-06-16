@@ -73,12 +73,12 @@ int main()
     VectorDataset dataset;                           // create a VectorDataset object to store the dataset
     cout << "Your Dataset is being read..." << endl; // print a message to indicate that the dataset is being read
     // dataset.readDataset("2.csv");                    // read the dataset from a file
-    dataset.readDataset("fmnist-train.csv");
+    dataset.readDataset("test1.csv");
     cout << "Dataset read successfully!" << endl; // print a message to indicate that the dataset has been read successfully
 
     // Ask for the dimension of the test vector from the user.
     // The dimension should be equal to the number of columns in the dataset.
-    int dimension=784;
+    int dimension=7;
     // cout << "Enter the dimension of the test vector.";
     // cout << "The dimension should be equal to the number of columns in the dataset:" << endl;
     // cin >> dimension;
@@ -92,7 +92,7 @@ int main()
 
     // reading Test Vector from file
     VectorDataset testvectorDataset;
-    testvectorDataset.readDataset("fmnist-test.csv");
+    testvectorDataset.readDataset("test2.csv");
 
     // Ask for the components of the test vector from the user.
     // The components are set using the setComponent method of the DataVector class.
@@ -107,17 +107,17 @@ int main()
 
     // Ask for the number of nearest neighbours from the user.
     // The number of nearest neighbours is set to the value entered by the user.
-    int k;
+    int k=4;
     cout << "Enter the value of k i.e. the number of nearest neighbours you want to find: ";
-    cin >> k;
+    // cin >> k;
 
     // Find the k nearest neighbors of the test vector in the dataset using the kNearestNeighbors function.
     // The time taken to find the nearest neighbors is measured using the chrono library.
     // The nearest neighbors are printed to the console.
     // The time taken to find the nearest neighbors is printed to the console.
-    int number;
+    int number=1;
     cout<<"Enter the number of test vectors you want to test:";
-    cin>>number;
+    // cin>>number;
     cout << "Finding the nearest neighbours..." << endl;
 
     auto start = chrono::high_resolution_clock::now();

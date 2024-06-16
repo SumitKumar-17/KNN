@@ -1,6 +1,4 @@
 #include "DataVector.h"
-#include <iostream>
-#include <cmath>
 using namespace std;
 // This is the implementation file for the DataVector class. It contains the definitions of the member functions of the class.
 // The DataVector class is a simple class that represents a vector of double value data.
@@ -96,7 +94,7 @@ double DataVector::operator*(const DataVector &other)
 }
 
 // The print method of the DataVector class is defined here. It prints the vector.
-void DataVector::print()
+void DataVector::print() const
 {
     cout << "<"; // print the components of the vector
     for (int i = 0; i < v.size() - 1; i++)
@@ -116,9 +114,20 @@ double DataVector::norm(const DataVector &other)
 }
 
 // The dist method of the DataVector class is defined here. It takes a DataVector argument and returns the Euclidean distance between the vectors.
-double DataVector::dist(const DataVector &other)
+double DataVector::dist(const DataVector &other) const
 {
-    return sqrt((*this - other) * (*this - other)); // return the square root of the dot product of the difference of the vectors with itself
+    if (v.size() != other.v.size())
+    {
+        throw std::invalid_argument("Vectors must be of the same dimension");
+    }
+    double distance = 0.0;
+    for (size_t i = 0; i < v.size(); ++i)
+    {
+        distance += std::pow(v[i] - other.v[i], 2);
+    }
+
+    return std::sqrt(distance);
+    // return the square root of the dot product of the difference of the vectors with itself
 }
 
 // The setComponent method of the DataVector class is defined here. It takes an integer index and a double value and sets the value of the component at the given index.
@@ -138,4 +147,149 @@ void DataVector::setComponent(int index, double value)
 void DataVector::addComponent(double value)
 {
     v.push_back(value); // add the value to the vector
+}
+
+// The getComponent method of the DataVector class is defined here. It takes an integer index and returns the value of the component at the given index.
+double DataVector::getComponent(int index) const
+{
+    if (index >= 0 && index < v.size()) // check if the index is within the range of the vector
+    {
+        return v[index]; // return the value of the component at the given index
+    }
+
+    else
+    {   
+        // cout<<":"<<index <<":"<<v.size()<<":"<<endl;
+        // cout << "Error: Index out of range-1" << endl; // print an error message. This is not necessary as the error will be handled by the calling function.
+        return 0;
+    }
+}
+
+// The getDimension method of the DataVector class is defined here. It returns the dimension of the vector.
+int DataVector::getDimension() const
+{
+    return v.size();
+}
+
+double DataVector::getMedian(int dimension) const
+{
+    if (dimension < 0 || dimension >= v.size())
+    {
+        throw std::out_of_range("Dimension out of range");
+    }
+
+    // Make a copy of the vector elements along the specified dimension
+    vector<double> dimValues(v.size());
+    for (size_t i = 0; i < v.size(); ++i)
+    {
+        dimValues[i] = v[i];
+    }
+
+    // Sort the copied vector
+    sort(dimValues.begin(), dimValues.end());
+
+    // If the size of the dimension is odd, return the middle element
+    // Otherwise, return the average of the two middle elements
+    size_t midIndex = dimValues.size() / 2;
+    if (dimValues.size() % 2 == 1)
+    {
+        return dimValues[midIndex];
+    }
+    else
+    {
+        return (dimValues[midIndex - 1] + dimValues[midIndex]) / 2.0;
+    }
+}
+
+void DataVector::readDataset(const string &filename, vector<DataVector> &dataset)
+{
+    // cout<<"reading"<<endl;
+    std::ifstream file(filename); // open the file
+    if (!file.is_open())
+    {
+        std::cerr << "Error: Unable to open file " << filename << std::endl;
+        return;
+    }
+
+    std::string line; // string to store each line of the file
+    while (std::getline(file, line))
+    {
+
+        // cout<<"readline"<<endl;
+        std::istringstream iss(line); // create a string stream from the line
+
+        DataVector dataVector;
+
+        double value;
+        while (iss >> value)
+        {
+            dataVector.addComponent(value); // add the value to the vector
+
+            char comma; // variable to store the comma
+            if (iss >> comma && comma != ',')
+            {
+                std::cerr << "Error: Invalid CSV format" << std::endl;
+                dataset.clear(); // clear the dataset
+                break;
+            }
+        }
+
+        // add the vector to the dataset
+        //  dataVector.print();
+        dataset.push_back(dataVector);
+    }
+
+    file.close(); // close the file
+}
+
+bool DataVector::operator==(const DataVector &other) const
+{
+    // Compare the data vectors element-wise
+    for (int i = 0; i < v.size(); ++i)
+    {
+        if (v[i] != other.v[i])
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+void DataVector::randomize()
+{
+    // Randomize the components of the vector
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_real_distribution<double> dis(-1.0, 1.0);
+
+    for (double &component : v)
+    {
+        component = dis(gen);
+    }
+}
+
+double DataVector::dot(const DataVector &other) const
+{
+    double result = 0.0;
+    int dimension = min(getDimension(), other.getDimension());
+    for (int i = 0; i < dimension; ++i)
+    {
+        result += v[i] * other.getComponent(i);
+    }
+    return result;
+}
+
+void DataVector::normalize()
+{
+    double norm = 0.0;
+    for (double component : v)
+    {
+        norm += component * component;
+    }
+    norm = std::sqrt(norm);
+    for (double &component : v)
+    {
+        component /= norm;
+    }
 }

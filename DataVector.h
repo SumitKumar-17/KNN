@@ -1,5 +1,11 @@
 #include <iostream>
 #include <vector>
+#include <cmath>
+#include <algorithm>
+#include <stdexcept>
+#include <fstream>
+#include <sstream>
+#include <random>
 
 using namespace std;
 
@@ -28,10 +34,19 @@ public:
     DataVector operator-(const DataVector &other);  // overloaded operator for subtraction. This is a member function of the class DataVector.
     double operator*(const DataVector &other);      // overloaded operator for dot product. This is a member function of the class DataVector.
 
-    void print();                         // method to print the vector. This is a member function of the class DataVector.
+    void print() const;                         // method to print the vector. This is a member function of the class DataVector.
     double norm(const DataVector &other); // method to calculate the Euclidean norm of the vector. This is a member function of the class DataVector.
-    double dist(const DataVector &other); // method to calculate the Euclidean distance between two vectors. This is a member function of the class DataVector.
+    double dist(const DataVector &other)const; // method to calculate the Euclidean distance between two vectors. This is a member function of the class DataVector.
 
     void setComponent(int index, double value); // method to set the value of a component at a given index. This is a member function of the class DataVector.
     void addComponent(double value);            // method to add a value to the vector. This is a member function of the class DataVector.
+    double getComponent(int index) const;             // method to get the value of a component at a given index. This is a member function of the class DataVector.
+    int getDimension() const;                         // method to get the dimension of the vector. This is a member function of the class DataVector.
+    double getMedian(int dimension) const;          // method to get the median value of the components along a given dimension. This is a member function of the class DataVector.
+    void readDataset(const string& filename, vector<DataVector>& dataset); // method to read a dataset from a file. This is a member function of the class DataVector.
+    bool operator==(const DataVector& other) const;
+
+    void randomize();  // method to randomize the components of the vector. This is a member function of the class DataVector.
+    double dot(const DataVector& other) const; // method to calculate the dot product of two vectors. This is a member function of the class DataVector.    
+    void normalize();
 };

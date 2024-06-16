@@ -1,19 +1,16 @@
 CXX = g++
-TARGET = TreeIndex.out
-SRCS = run.cpp DataVector.cpp TreeIndex.cpp
-OBJS = $(SRCS:.cpp=.o)
 CXXFLAGS = -Wall -O2
 
-$(TARGET): $(OBJS)
-	$(CXX) $(CXXFLAGS) -o $(TARGET) $(OBJS)
+OUTPUT = TreeIndex.out
+SOURCES = run.cpp DataVector.cpp TreeIndex.cpp
 
-%.o: %.cpp
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+all: $(OUTPUT)
+	./$(OUTPUT)
 
-.PHONY: run
-run: $(TARGET)
-	./$(TARGET)
+$(OUTPUT): $(SOURCES)
+	$(CXX) $(CXXFLAGS) -o $(OUTPUT) $(SOURCES)
 
-.PHONY: clean
 clean:
-	rm -f $(TARGET) $(OBJS)
+	rm -f $(OUTPUT)
+
+.PHONY: all clean
